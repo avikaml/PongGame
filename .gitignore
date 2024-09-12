@@ -19,3 +19,22 @@
 
 # Go workspace file
 go.work
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+bin/
+obj/
+
+# Configuration files
+.env
+*.local
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
