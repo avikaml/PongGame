@@ -16,8 +16,8 @@ import (
 const (
 	screenWidth  = 640
 	screenHeight = 480
-	ballSpeed   = 4
-	paddleSpeed  = 5 // The paddle will move 6 pixels per tick
+	ballSpeed   = 5
+	paddleSpeed  = 6 // The paddle will move 6 pixels per tick
 	increaseCounter = 5
 )
 
@@ -77,6 +77,8 @@ func (g *Game) Update() error {
 	if g.score > 0 && g.increaseSpeedPerCount % (1+rand.Intn(5)) == 0{
 		g.ball.Move()
 		//fmt.Printf("iSPC: %d", g.increaseSpeedPerCount)
+	}else if g.score >0 && g.increaseSpeedPerCount % 10 == 0{
+		g.ball.moveFast()
 	}
 	return nil
 }
@@ -123,6 +125,11 @@ func (ball* Ball) Move() { // The ball moves on its own
 	*/
 	ball.X += ball.dxdt
 	ball.Y += ball.dydt
+}
+
+func (ball* Ball) moveFast() {
+	ball.X += 2*ball.dxdt
+	ball.Y += 2*ball.dydt
 }
 
 func(g *Game) Reset() {
