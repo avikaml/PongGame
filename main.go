@@ -10,6 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font/basicfont"
 	"fmt"
+	"math/rand"
 )
 
 const (
@@ -17,6 +18,7 @@ const (
 	screenHeight = 480
 	ballSpeed   = 4
 	paddleSpeed  = 5 // The paddle will move 6 pixels per tick
+	increaseCounter = 5
 )
 
 type Object struct {
@@ -37,6 +39,7 @@ type Game struct {
 	paddle Paddle
 	ball Ball
 	score, highScore int
+	increaseSpeedPerCount int
 }
 
 func main() {
@@ -71,6 +74,10 @@ func (g *Game) Update() error {
 	g.ball.Move()
 	g.CollideWithWall()
 	g.CollideWithPaddle()
+	if g.score > 0 && g.increaseSpeedPerCount % (1+rand.Intn(5)) == 0{
+		g.ball.Move()
+		//fmt.Printf("iSPC: %d", g.increaseSpeedPerCount)
+	}
 	return nil
 }
 
@@ -133,14 +140,16 @@ func (g *Game) CollideWithWall(){
 	}else if g.ball.Y <=0{
 		g.ball.dydt = ballSpeed
 	}else if g.ball.Y >= screenHeight{
-		g.ball.dydt = - ballSpeed
+		g.ball.dydt =- ballSpeed
 	}
 }
 
 func (g *Game) CollideWithPaddle(){
-	if g.ball.X >= g.paddle.X && g.ball.Y>=g.paddle.Y && g.ball.Y <= g.paddle.Y + g.paddle.Height {
+	if g.ball.X+g.ball.Width >= g.paddle.X && g.ball.X < g.paddle.X+g.paddle.Width && g.ball.Y >= g.paddle.Y && g.ball.Y <= g.paddle.Y+g.paddle.Height {
 		g.ball.dxdt = -g.ball.dxdt
-		g.score ++
+		g.ball.X = g.paddle.X - g.ball.Width // Reset ball position to the front of the paddle
+		g.increaseSpeedPerCount++
+		g.score++
 		if g.score > g.highScore {
 			g.highScore = g.score
 		}
